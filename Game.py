@@ -1,6 +1,7 @@
 from Board import Board, State
 import uuid
 
+
 class GameRepository():
     def __init__(self) -> None:
         self.games = []

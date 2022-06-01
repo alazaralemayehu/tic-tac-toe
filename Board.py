@@ -123,6 +123,7 @@ class Board:
             return "The game is over"
         
     def toJSON(self):
+        
         return {
             "uuid": self.uuid,
             "status": str( State.RUNNING),

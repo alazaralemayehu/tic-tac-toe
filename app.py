@@ -2,6 +2,7 @@ import json
 from flask import Flask, jsonify
 from Game import GameRepository
 
+
 gameRepository = GameRepository()
 
 app = Flask(__name__)
