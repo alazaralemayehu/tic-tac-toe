@@ -1,20 +1,20 @@
 import enum
-from random import randint, random
+from random import randint
 import json
 
 class State(enum.Enum):
-    RUNNING = 0
-    X_WON = 1
-    O_WON = 2
-    DRAW = 3
+    RUNNING = "RUNNING"
+    X_WON = "X_WON"
+    O_WON = "O_WON"
+    DRAW = "DRAW"
 
 class Board:
     def __init__(self):
         self.state = State.RUNNING
         self.uuid = None
         self.board = "---------"
-        self.computer = "X"
-        self.user = "0"
+        self.computer = "0"
+        self.user = "X"
 
     def get_board(self):
         return self.board
@@ -48,40 +48,70 @@ class Board:
         self.board = updated_board
         return self.validate_board()
 
+    def detect_consecutive_move(self, new_board):
+        board_length = len(self.board)
+        updated_index = -1
+        number_of_moves = 0
+        
+        for i in range(board_length):
+            if (new_board[i] != self.board[i]):
+                number_of_moves +=1
+                updated_index = i
+                if (number_of_moves > 1):
+                    return True,"You can't make consecutive moves"
+        
+        return False, updated_index
 
-    def user_move(self, index):
-        if (0 > index or len(self.board)< index):
-            return False, "wrong move"
-        return self.update_board(index, self.user)        
+    def user_move(self, new_board):
+
+        board_length = len(self.board)
+        if (len(new_board) != board_length):
+            return True, "The length of the new board is not correct"
+
+        err, message = self.detect_consecutive_move(new_board)
+        if (err):
+            return err, message
+            
+        if (message == -1):
+            return True, "you have to make new moves"
+        new_move_index = message
+
+        if (self.board[new_move_index] != "-"):
+            return True, "You can't update previous moves"
+        
+        self.board = new_board
+        self.validate_board()
+        return False, self     
 
     def computer_move(self):
         possible_moves = []
         for i in range(len(self.board)):
             if (self.board[i] == "-"):
                 possible_moves.append(i)
-        nextmove =possible_moves[(random.randint(0, len(possible_moves)))]
+        nextmove =possible_moves[(randint(0, len(possible_moves) - 1))]
+        print(nextmove)
         return self.update_board(nextmove, self.computer)
 
     def validate_board(self):
         game_over, index = self.is_there_diagonal_win()
         if (game_over):
-            return self.check_winner(index)
+            return True, self.check_winner(index)
 
         game_over, index = self.is_there_horizontal_win()
         if (game_over):
-            return self.check_winner(index)
+            return True, self.check_winner(index)
 
         game_over, index = self.is_there_virtical_win()
         if (game_over):
-            return self.check_winner(index)
+            return True, self.check_winner(index)
         
-        return self.state
+        return False, self.state
         
     def is_there_horizontal_wins(self):
         win = False
         for idx in range(3):
             current_index = idx * 3
-            if (self.board[current_index] == self.board[current_index + 1] == self.board[current_index + 2]):
+            if (self.board[current_index] == self.board[current_index + 1] == self.board[current_index + 2] and self.board[current_index] !="-"):
                 win = True
                 break
         if win:
@@ -118,14 +148,14 @@ class Board:
     def get_state(self):
         return self.state
 
-    def validate_move(self):
+    def game_over(self):
         if (self.state != State.RUNNING):
-            return "The game is over"
+            return True
         
     def toJSON(self):
         
         return {
             "uuid": self.uuid,
-            "status": str( State.RUNNING),
+            "status": str(self.state.value),
             "board": self.board
         }
