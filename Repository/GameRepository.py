@@ -19,11 +19,13 @@ class GameRepository():
             err, index_or_error = game.detect_consecutive_move(new_board)
             if (err):
                 return err, index_or_error
-            
+            # The player makes the first move
             if (index_or_error != -1):
+                # Change the default piece based on user preference (X or 0)
                 if (game.player != new_board[index_or_error]):
                     game.player, game.computer = game.computer, game.player
-                # game.player = new_board[index_or_error]
+
+
             err, message = game.set_board(new_board)
             if (err):
                 return True, message
