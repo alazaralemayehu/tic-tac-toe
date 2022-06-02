@@ -24,7 +24,10 @@ class GameRepository():
                 if (game.player != new_board[index_or_error]):
                     game.player, game.computer = game.computer, game.player
                 # game.player = new_board[index_or_error]
-            game.set_board(new_board) 
+            err, message = game.set_board(new_board)
+            if (err):
+                return True, message
+                 
             game.computer_move()      
         game = game.toJSON()
 

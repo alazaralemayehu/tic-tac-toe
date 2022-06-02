@@ -17,9 +17,7 @@ def get_boards():
 
 @app.route("/api/v1/games/", methods=["POST"])
 def create_board():
-    print("test")
     json_request = request.json
-    print(json_request)
     err, game_or_error = gameController.store(json_request)
  
     if (err):

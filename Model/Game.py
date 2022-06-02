@@ -49,8 +49,13 @@ class Game:
         return self.board
 
     def set_board(self, board):
-        self.board = board
-
+        for character in board:
+            if (character not in ["X","0","x","-"]):
+                
+                print("invalid character")
+                return True, "invalid character"
+        self.board = board.capitalize()
+        return False, self.board
     # Check which piece is the winner
     def check_winner(self, index):
         if (self.board[index] == "X"):
@@ -70,9 +75,10 @@ class Game:
                 updated_board += player
             else:
                 updated_board += self.board[i]
-        print(updated_board)
-        self.set_board(updated_board)
-        return self.calculate_game_state()
+        err, message = self.set_board(updated_board)
+        if (err):
+            return message, 400
+        return self.calculate_game_state(),200
 
     # Detects if the player is making consecutive moves 
     def detect_consecutive_move(self, new_board):
@@ -100,7 +106,9 @@ class Game:
         err, message = self.detect_consecutive_move(new_board)
         if (err):
             return err, message
-        
+        for character in new_board:
+            if (character not in ["X","0","x"]):
+                return True, "invalid character"
         # Check if the user is sending the same move again
         if (message == -1):
             return True, "you have to make a new move"
@@ -108,9 +116,10 @@ class Game:
 
         if (self.board[new_move_index] != "-"):
             return True, "You can't update previous moves"
-        
-        self.set_board(new_board)
 
+        err, message = self.set_board(new_board.capitalize())
+        if err:
+            return err, message
         # Calculates the game status after each move
         self.calculate_game_state()
    
