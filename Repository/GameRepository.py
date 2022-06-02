@@ -27,12 +27,11 @@ class GameRepository():
             err, message = game.set_board(new_board)
             if (err):
                 return True, message
-                 
+
             game.computer_move()      
         game = game.toJSON()
 
         self.games.append(game)
-        self.games[0]['uuid'] = 1
         return False, game
     
     def get_game(self, game_uuid):

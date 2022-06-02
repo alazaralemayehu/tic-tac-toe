@@ -35,4 +35,3 @@ To make a move send a PUT request to /api/v1/games/\<id\>/ with {"uuid":  "1","g
 ****Deleting a game****
 
 To delete a game send a DELETE request to /api/v1/games/\<id\>/.
-

@@ -15,7 +15,6 @@ class GameController:
         uuid = request.get("uuid", None)
         if (uuid == None):
             return True, "Board id is not found in the request"
-        # print(uuid)
         game = request.get("game", None)
         if (game == None):
             return True, "new board is not found in the request"

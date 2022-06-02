@@ -51,10 +51,8 @@ class Game:
     def set_board(self, board):
         for character in board:
             if (character not in ["X","0","x","-"]):
-                
-                print("invalid character")
                 return True, "invalid character"
-        self.board = board.capitalize()
+        self.board = board.upper()
         return False, self.board
     # Check which piece is the winner
     def check_winner(self, index):
@@ -107,7 +105,7 @@ class Game:
         if (err):
             return err, message
         for character in new_board:
-            if (character not in ["X","0","x"]):
+            if (character not in ["X","0","x","-"]):
                 return True, "invalid character"
         # Check if the user is sending the same move again
         if (message == -1):
@@ -117,7 +115,7 @@ class Game:
         if (self.board[new_move_index] != "-"):
             return True, "You can't update previous moves"
 
-        err, message = self.set_board(new_board.capitalize())
+        err, message = self.set_board(new_board.upper())
         if err:
             return err, message
         # Calculates the game status after each move
