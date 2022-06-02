@@ -81,34 +81,3 @@ class GameRepository():
                 del self.games[i]
                 return False, "Game successfully deleted"
 
-
-
-
-def mains():
-    possible_wins = [
-    # "OOO------",
-    # "---OOO---",
-    # "------OOO",
-    # "X--X--X--",
-    # "-X--X--X-",
-    "--X--X--X",
-    "X---X---X",
-    "--X-X-X--",
-    "---------"
-    ]
-
-    board = Board()
-    print(board.user_move(0))
-    print(board.user_move(1))
-    print(board.user_move(99))
-    print(board.user_move(3))
-    print(board.user_move(4))
-    print(board.user_move(5))
-    print(board.board)
-    # for b in possible_wins:
-    #     board.board = b
-       
-    #     print(b)
-    #     print(board.validate_board())
-
-# main()

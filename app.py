@@ -2,6 +2,7 @@ import json
 from Controller.GameController import GameController
 from flask import Flask, jsonify, request, make_response
 from Repository.GameRepository import GameRepository
+import os 
 
 gameController = GameController()
 app = Flask(__name__)
@@ -13,8 +14,6 @@ def get_boards():
     if (len(games) == 0):
         return json.dumps([]), 404
     return json.dumps(games,indent=4), 200
-
-
 
 @app.route("/api/v1/games/", methods=["POST"])
 def create_board():
@@ -72,4 +71,5 @@ def delete_board(id):
     
 
 if __name__ == '__main__':
-   app.run(debug=True)
+    port =  int(os.environ.get('PORT', 5000))
+    app.run(debug=True, host="0.0.0.0", port=port)

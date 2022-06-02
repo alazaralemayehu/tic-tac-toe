@@ -51,6 +51,7 @@ class Game:
     def set_board(self, board):
         self.board = board
 
+    # Check which piece is a winner
     def check_winner(self, index):
         if (self.board[index] == "X"):
             self.state = State.X_WON
@@ -73,6 +74,7 @@ class Game:
         self.set_board(updated_board)
         return self.calculate_game_state()
 
+    # Detects if the player is making consecutive moves 
     def detect_consecutive_move(self, new_board):
         board_length = len(self.board)
         updated_index = -1
@@ -90,14 +92,16 @@ class Game:
     def user_move(self, new_board):
 
         board_length = len(self.board)
-        # Check the length of the board string is
+        # Check if the length of the updated board is and the length of the existing board
         if (len(new_board) != board_length):
             return True, "The length of the new board is not correct"
 
+        # Check if the player is making two moves without waiting for the computer
         err, message = self.detect_consecutive_move(new_board)
         if (err):
             return err, message
-            
+        
+        # Check if the user is sending the same move again
         if (message == -1):
             return True, "you have to make new moves"
         new_move_index = message
@@ -105,10 +109,18 @@ class Game:
         if (self.board[new_move_index] != "-"):
             return True, "You can't update previous moves"
         
-        self.board = new_board
-        self.calculate_game_state()
-        return False, self     
+        self.set_board(new_board)
 
+        # Calculates the game status after each move
+        self.calculate_game_state()
+   
+        return False, self     
+    
+    # Algorithm for this game
+    # In the future, it can be replaced with other algorithms
+    # Gets all the moves that can take place by the computer
+    # Take a random move
+    # Perform that move
     def computer_move(self):
         possible_moves = []
         if not self.are_there_more_moves():
@@ -117,9 +129,11 @@ class Game:
         for i in range(len(self.board)):
             if (self.board[i] == "-"):
                 possible_moves.append(i)
-        nextmove =possible_moves[(randint(0, len(possible_moves) - 1))]
+        nextmove = possible_moves[(randint(0, len(possible_moves) - 1))]
         return self.update_board(nextmove, self.computer)
 
+    # check the game state
+    #  The 
     def calculate_game_state(self):
         game_over, index = self.is_there_diagonal_win()
         if (game_over):
@@ -130,9 +144,13 @@ class Game:
             return True, self.check_winner(index)
 
         game_over, index = self.is_there_virtical_win()
+        
         if (game_over):
             return True, self.check_winner(index)
         
+        if not self.are_there_more_moves():
+            return True, self.state
+
         return False, self.state
         
     def is_there_horizontal_wins(self):
