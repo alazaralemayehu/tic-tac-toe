@@ -10,7 +10,7 @@ class State(enum.Enum):
 
 # 
 # Board Class 
-# This calass provides the board functionality 
+# This class provides the board functionality 
 # 
 # Implementation strategy
 # .-----------.
@@ -42,8 +42,8 @@ class Game:
         self.state = State.RUNNING
         self.uuid = None
         self.board = "---------"
-        self.computer = "0" # Default piece for computer
-        self.player = "X" # Default piece for player
+        self.computer = "0" # Default piece type for computer
+        self.player = "X"   # Default piece type for player
 
     def get_board(self):
         return self.board
@@ -51,7 +51,7 @@ class Game:
     def set_board(self, board):
         self.board = board
 
-    # Check which piece is a winner
+    # Check which piece is the winner
     def check_winner(self, index):
         if (self.board[index] == "X"):
             self.state = State.X_WON
@@ -85,7 +85,7 @@ class Game:
                 number_of_moves +=1
                 updated_index = i
                 if (number_of_moves > 1):
-                    return True,"You can't make consecutive moves"
+                    return True,"You can't make multiple moves in one turn"
         
         return False, updated_index
 
@@ -103,7 +103,7 @@ class Game:
         
         # Check if the user is sending the same move again
         if (message == -1):
-            return True, "you have to make new moves"
+            return True, "you have to make a new move"
         new_move_index = message
 
         if (self.board[new_move_index] != "-"):
