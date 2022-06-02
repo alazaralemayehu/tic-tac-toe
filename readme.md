@@ -3,7 +3,7 @@
 This application provides an API for playing tic-tac-toe game.
 **The simplified architecture is as follows**
 
-![alt text] (https://github.com/alazaralemayehu/tic-tac-toe/blob/main/architecture.png)
+![alt text](https://github.com/alazaralemayehu/tic-tac-toe/blob/main/architecture.png)
 
 **Installation**
 There are two ways to install the application;
