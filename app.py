@@ -1,7 +1,7 @@
 import json
 from urllib import response
 from flask import Flask, jsonify, request, make_response
-from Game import GameRepository
+from Repository.GameRepository import GameRepository
 
 gameRepository = GameRepository()
 

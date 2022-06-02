@@ -1,6 +1,6 @@
 import json
 import uu
-from Board import Board, State
+from Model.Board import Board, State
 import uuid
 from types import SimpleNamespace as Namespace
 
