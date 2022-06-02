@@ -33,7 +33,7 @@ The game can start by sending a POST request to /api/v1/games/ with {"board","st
 
 \***\*Making a move\*\***
 
-To make a move send a PUT request to /api/v1/games/\<id\>/ with {"uuid": "1","game": {"board": "string of your move"}} payload
+To make a move send a PUT request to /api/v1/games/\<id\>/ with {"uuid": "id","game": {"board": "string of your move"}} payload
 
 \***\*Deleting a game\*\***
 
