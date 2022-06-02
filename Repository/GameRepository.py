@@ -1,44 +1,44 @@
 import json
-import uu
-from Model.Board import Board, State
+from Model.Game import Game, State
 import uuid
-from types import SimpleNamespace as Namespace
 
 
 class GameRepository():
     def __init__(self) -> None:
         self.games = []
 
+
     def get_games(self):
         return self.games
     
     def create_game(self, new_board):
-        board = Board()
+        game = Game()
         game_uuid = str(uuid.uuid1())
-        board.uuid = game_uuid
+        game.uuid = game_uuid
         if (new_board is not None):
-            err, index_or_error = board.detect_consecutive_move(new_board)
+            err, index_or_error = game.detect_consecutive_move(new_board)
             if (err):
                 return err, index_or_error
             
             if (index_or_error != -1):
-                board.user = new_board[index_or_error]
-            board.set_board(new_board)       
-        board = board.toJSON()
+                if (game.player != new_board[index_or_error]):
+                    game.player, game.computer = game.computer, game.player
+                # game.player = new_board[index_or_error]
+            game.set_board(new_board) 
+            game.computer_move()      
+        game = game.toJSON()
 
-        self.games.append(board)
+        self.games.append(game)
         self.games[0]['uuid'] = 1
-        return False, board
+        return False, game
     
     def get_game(self, game_uuid):
         for game in self.games:
             if (str(game["uuid"]) == str(game_uuid)):
-                board = self.convert_JSON_to_object(game)
-                print(board.state, "status")   
-                
-                return False, board
-
-        return True, " Game Id does not exist"
+                game = self.convert_JSON_to_object(game)
+                return False, game
+            
+        return True, "Game does not exist"
     def update_games(self, board, game_uuid):
         for i  in range (len(self.games)):
             if (str(self.games[i]["uuid"]) == str(game_uuid)):
@@ -46,32 +46,43 @@ class GameRepository():
                 
 
     def convert_JSON_to_object(self, dict_board_object):
-        board =  Board()
-        board.set_board(dict_board_object['board'])
-        board.uuid = dict_board_object["uuid"]
-        board.state = State(dict_board_object["status"])
-        return board
-
-
+        game =  Game()
+        game.set_board(dict_board_object['board'])
+        game.uuid = dict_board_object["uuid"]
+        game.state = State(dict_board_object["status"])
+        
+        return game
 
     def update_game(self, uuid, new_board):
-        err, board = self.get_game(uuid)
+        err, game = self.get_game(uuid)
         if (err):
-            return True, board
+            return True, "game not found"
 
-        if board.game_over():
-            return True, board.toJSON()
+        if game.game_over():
+            return True, game.toJSON()
 
-        err, board = board.user_move(new_board)
+        err, game = game.user_move(new_board)
         if err:
-            return err, board
+            return err, game
         
-        if not board.game_over():
-            board.computer_move()
+        if not game.game_over():
+            game.computer_move()
 
-        self.update_games(board.toJSON(), uuid)
+        self.update_games(game.toJSON(), uuid)
         
-        return err, board.toJSON()
+        return err, game.toJSON()
+    def delete_game(self, game_uuid):
+        err, game_or_error = self.get_game(game_uuid)
+        if (err):
+            return err, game_or_error 
+            
+        for i  in range (len(self.games)):
+            if (str(self.games[i]["uuid"]) == str(game_uuid)):
+                del self.games[i]
+                return False, "Game successfully deleted"
+
+
+
 
 def mains():
     possible_wins = [

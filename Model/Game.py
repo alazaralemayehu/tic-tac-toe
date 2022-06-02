@@ -8,19 +8,47 @@ class State(enum.Enum):
     O_WON = "O_WON"
     DRAW = "DRAW"
 
-class Board:
+# 
+# Board Class 
+# This calass provides the board functionality 
+# 
+# Implementation strategy
+# .-----------.
+# | 0 | 1 | 2 |
+# +---+---+---+
+# | 3 | 4 | 5 |
+# +---+---+---+
+# | 6 | 7 | 8 |
+# `-----------´
+
+# So, a board position
+
+# .-----------.
+# | X | O | - |
+# +---+---+---+
+# | - | X | - |
+# +---+---+---+
+# | - | O | X |
+# `-----------´
+
+# translates to
+
+# XO--X--OX
+# 012345678
+# 
+
+class Game:
     def __init__(self):
         self.state = State.RUNNING
         self.uuid = None
         self.board = "---------"
-        self.computer = "0"
-        self.user = "X"
+        self.computer = "0" # Default piece for computer
+        self.player = "X" # Default piece for player
 
     def get_board(self):
         return self.board
 
     def set_board(self, board):
-        self.state = State.RUNNING
         self.board = board
 
     def check_winner(self, index):
@@ -33,20 +61,17 @@ class Board:
     def update_board(self, index, player):
         if self.state != State.RUNNING:
             return False, self.state
-            
-        if not self.are_there_more_moves():
-            return False, self.state         
 
         updated_board = ""
 
         for i in range(len(self.board)):
             if (index == i):
                 updated_board += player
-                # to do
             else:
                 updated_board += self.board[i]
-        self.board = updated_board
-        return self.validate_board()
+        print(updated_board)
+        self.set_board(updated_board)
+        return self.calculate_game_state()
 
     def detect_consecutive_move(self, new_board):
         board_length = len(self.board)
@@ -65,6 +90,7 @@ class Board:
     def user_move(self, new_board):
 
         board_length = len(self.board)
+        # Check the length of the board string is
         if (len(new_board) != board_length):
             return True, "The length of the new board is not correct"
 
@@ -80,19 +106,21 @@ class Board:
             return True, "You can't update previous moves"
         
         self.board = new_board
-        self.validate_board()
+        self.calculate_game_state()
         return False, self     
 
     def computer_move(self):
         possible_moves = []
+        if not self.are_there_more_moves():
+            return False, self.state         
+
         for i in range(len(self.board)):
             if (self.board[i] == "-"):
                 possible_moves.append(i)
         nextmove =possible_moves[(randint(0, len(possible_moves) - 1))]
-        print(nextmove)
         return self.update_board(nextmove, self.computer)
 
-    def validate_board(self):
+    def calculate_game_state(self):
         game_over, index = self.is_there_diagonal_win()
         if (game_over):
             return True, self.check_winner(index)
